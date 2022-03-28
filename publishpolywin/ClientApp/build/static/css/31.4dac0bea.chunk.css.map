@@ -1,0 +1,1 @@
+{"version":3,"sources":["custom.css"],"names":[],"mappings":"AAGA,cACI,mBACJ,CACA,KACI,6BACJ","file":"31.4dac0bea.chunk.css","sourcesContent":["/* Provide sufficient contrast against white background */\r\n \r\n\r\n.modal-dialog {\r\n    width: 77% !important;\r\n}\r\nbody {\r\n    font-family: 'Cairo' !important;\r\n}\r\n"]}
