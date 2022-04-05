@@ -105,6 +105,7 @@ class ProductIngredient extends Component {
             show: false,
             showImage: false,
             showEquetion: false,
+            currentId: 0,
             objIngredient: {
                 Id: 0,
                 equation: "",
@@ -254,7 +255,8 @@ class ProductIngredient extends Component {
                     this.setState({
                         totalEqution: 0,
                         objEquestion: obj,
-                        showEquetion: true
+                        showEquetion: true,
+                        currentId: rowInfo.original.id
                     });
                 }
             }
@@ -293,8 +295,9 @@ class ProductIngredient extends Component {
         let SubCategoryId = this.state.objIngredient.subCategoryId.value;
         let Width = value.Width;
         let Height = value.Height;
+        let Id = this.state.currentId;
 
-        defaultURLProductIngredients.get(`GetCalcProduct?SubCategoryId=${SubCategoryId}&productId=${productId}&width=${Width}&height=${Height}`).then(res => {
+        defaultURLProductIngredients.get(`GetCalcProduct?Id=${Id}&width=${Width}&height=${Height}`).then(res => {
             this.setState({
                 totalEqution: res.data
             });
@@ -437,6 +440,7 @@ class ProductIngredient extends Component {
                                 this.getCalcProduct(values)
                             }}
                             initialValues={{
+                                Id: this.state.currentId,
                                 ProductId: this.state.objEquestion.ProductId,
                                 Width: this.state.objEquestion.Width,
                                 Height: this.state.objEquestion.Height,

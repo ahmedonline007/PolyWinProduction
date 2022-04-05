@@ -14,7 +14,8 @@ namespace IPloyWinRepository.InterFace
         Response<List<DtoProductIngredients>> GetProductIngredientsBySubCat(int id);
         Response<List<DtoProductIngredients>> GetProductIngredientsByProduct(int id);
         //Task<string> GetCalcProduct(int productId, string width, string height);
-        string GetNewCalcProduct(int SubCategoryId, int productId, string width, string height);
+        //string GetNewCalcProduct(int SubCategoryId, int productId, string width, string height);
+        string GetNewCalcProduct(int Id, string width, string height);
         ProductCost GetTotalPriceWithItems(DtoProductCost dto, int? userType);
     }
 }

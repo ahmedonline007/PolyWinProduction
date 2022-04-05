@@ -169,17 +169,21 @@ namespace PloyWinRepository.Repository
             res.payload = result;
             return res;
         }
-        public string GetNewCalcProduct(int SubCategoryId, int productId, string width, string height)
+
+        public string GetNewCalcProduct(int Id, string width, string height)
         {
             using (SqlConnection conn = new SqlConnection("Server=SQL5102.site4now.net;Database=db_a7769c_mamsre;User Id=db_a7769c_mamsre_admin;password=Aa@123Ee@123;Trusted_Connection=False;MultipleActiveResultSets=true;"))
-            using (SqlCommand cmd = new SqlCommand("getExuationOfProduct", conn))
+            //using (SqlCommand cmd = new SqlCommand("getExuationOfProduct", conn))
+            using (SqlCommand cmd = new SqlCommand("getNewExuationOfProduct", conn))
             {
                 SqlDataAdapter adapt = new SqlDataAdapter(cmd);
                 adapt.SelectCommand.CommandType = CommandType.StoredProcedure;
-                adapt.SelectCommand.Parameters.Add(new SqlParameter("@subCategoryId", SqlDbType.Int));
-                adapt.SelectCommand.Parameters["@subCategoryId"].Value = SubCategoryId;
-                adapt.SelectCommand.Parameters.Add(new SqlParameter("@productId", SqlDbType.Int));
-                adapt.SelectCommand.Parameters["@productId"].Value = productId;
+                //adapt.SelectCommand.Parameters.Add(new SqlParameter("@subCategoryId", SqlDbType.Int));
+                //adapt.SelectCommand.Parameters["@subCategoryId"].Value = SubCategoryId;
+                //adapt.SelectCommand.Parameters.Add(new SqlParameter("@productId", SqlDbType.Int));
+                //adapt.SelectCommand.Parameters["@productId"].Value = productId;
+                adapt.SelectCommand.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int));
+                adapt.SelectCommand.Parameters["@Id"].Value = Id;
                 adapt.SelectCommand.Parameters.Add(new SqlParameter("@width", SqlDbType.NVarChar, 30));
                 adapt.SelectCommand.Parameters["@width"].Value = width;
                 adapt.SelectCommand.Parameters.Add(new SqlParameter("@height", SqlDbType.NVarChar, 30));
@@ -220,7 +224,7 @@ namespace PloyWinRepository.Repository
                 CostCalcItems calcItems = new CostCalcItems();
 
                 // عرض كل منتج بيخرج كام متر
-                var totalMeter = GetNewCalcProduct(item.SubCategoryId, item.ProductId, dto.Width, dto.height);
+                var totalMeter = GetNewCalcProduct(item.Id, dto.Width, dto.height);
 
                 // تكلفة المتر
                 var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.ColorId == dto.colorId && x.IsDeleted == null).Select(x =>

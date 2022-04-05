@@ -60,9 +60,9 @@ namespace PolyWinApplication.Controllers.infoData
 
         [HttpGet]
         [Route("GetCalcProduct")]
-        public async Task<IActionResult> GetCalcProduct(int SubCategoryId,int productId, string width, string height)
+        public async Task<IActionResult> GetCalcProduct(int Id, string width, string height)
         {
-            var Product = _productIngredientsRepository.GetNewCalcProduct(SubCategoryId,productId, width, height);//GetCalcProduct(productId, width, height);
+            var Product = _productIngredientsRepository.GetNewCalcProduct(Id, width, height);//GetCalcProduct(productId, width, height);
             return Ok(Product);
         }
 
