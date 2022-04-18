@@ -1,15 +1,13 @@
 ﻿using IPloyWinRepository.InterFace;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PloyWinContext.Context;
 using PloyWinContext.Entities;
 using PloyWinDto.Dto;
 using PloyWinRepository.EnumData;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
+using System.Linq; 
 using System.Threading.Tasks;
 
 namespace PloyWinRepository.Repository
@@ -17,10 +15,12 @@ namespace PloyWinRepository.Repository
     public class UserControlService : GenericRepository<ApplicationContext, ApplicationUser>, IUserControlService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILoginTransactionRepository _login;
 
-        public UserControlService(UserManager<ApplicationUser> userManager)
+        public UserControlService(UserManager<ApplicationUser> userManager, ILoginTransactionRepository login)
         {
             _userManager = userManager;
+            _login = login;
         }
 
         public List<User> GetUsers(string searchTerm = "")
@@ -56,9 +56,77 @@ namespace PloyWinRepository.Repository
 
                 Edit(result);
                 Save();
+
+                //save historylogin
+                var log = new LoginTransaction();
+
+                log.TypeAccount = result.UserType;
+                log.AddedDate = DateTime.Now;
+
+                if (result.UserType == 4)
+                {
+                    var resClient = Context.TblClient.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
+
+                    if (resClient != null)
+                    {
+                        log.AccountName = resClient.Name;
+                        log.Governorate = resClient.ClientAddress;
+                        log.Phone = resClient.ClientPhone;
+
+                        //save log on repository
+                        _login.AddLoginTransaction(log);
+                    }
+                }
+                else
+                {
+                    var resAgent = Context.TblAgent.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
+
+                    if (resAgent != null)
+                    {
+                        log.AccountName = resAgent.NameAgent;
+                        log.Governorate = resAgent.AgentGovernorate;
+                        log.Phone = resAgent.AgentPhone;
+
+                        _login.AddLoginTransaction(log);
+                    }
+                }
             }
             else if (result.device_id == device_id)
             {
+                //save historylogin
+                var log = new LoginTransaction();
+
+                log.TypeAccount = result.UserType;
+                log.AddedDate = DateTime.Now;
+
+                if (result.UserType == 4)
+                {
+                    var resClient = Context.TblClient.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
+
+                    if (resClient != null)
+                    {
+                        log.AccountName = resClient.Name;
+                        log.Governorate = resClient.ClientAddress;
+                        log.Phone = resClient.ClientPhone;
+
+                        //save log on repository
+                        _login.AddLoginTransaction(log);
+                    }
+                }
+                else
+                {
+                    var resAgent = Context.TblAgent.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
+
+                    if (resAgent != null)
+                    {
+                        log.AccountName = resAgent.NameAgent;
+                        log.Governorate = resAgent.AgentGovernorate;
+                        log.Phone = resAgent.AgentPhone;
+
+                        _login.AddLoginTransaction(log);
+                    }
+                }
+
                 return result;
             }
 
@@ -147,7 +215,8 @@ namespace PloyWinRepository.Repository
                     AccessFailedCount = 0,
                     Email = user.email,
                     PasswordHash = user.password,
-                    IsActive = (user.userType == 2 || user.userType == 4) ? true : false
+                    IsActive = (user.userType == 2 || user.userType == 4) ? true : false,
+                    addedDate = DateTime.Now
                 };
 
                 var result = await _userManager.CreateAsync(appUser);
@@ -363,16 +432,10 @@ namespace PloyWinRepository.Repository
                 UserTypeName = x.UserType == 1 ? "PolyWin" : (x.UserType == 2 ? "وكيل" : (x.UserType == 3 ? "ورشة" : "عميل")),
                 Password = x.PasswordHash,
                 ManagerId = x.ManagerId,
-            }).AsEnumerable().Select(x => new UserWithManager
-            {
-                Id = x.Id,
-                UserName = x.UserName,
-                UserType = x.UserType,
-                UserTypeName = x.UserType == 1 ? "PolyWin" : (x.UserType == 2 ? "وكيل" : (x.UserType == 3 ? "ورشة" : "عميل")),
-                Password = x.Password,
-                ManagerId = x.ManagerId,
-                managerName = GetAgentNameFromToken(x.ManagerId)
+                managerName = Context.TblAgent.Where(c => c.UserId == x.Id).FirstOrDefault().Name,
+                addedDate = x.addedDate != null ? x.addedDate.ToString("dd/MM/yyyy") : ""
             }).ToList();
+
             if (result != null)
             {
                 res.code = StaticApiStatus.ApiSuccess.Code;

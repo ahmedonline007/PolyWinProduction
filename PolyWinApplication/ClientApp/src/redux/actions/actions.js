@@ -21,7 +21,7 @@ import defaultURLCategoryChildGallery from '../../axios/axiosControllerCategoryC
 import defaultURLGallery from '../../axios/axiosControllerGallery';
 import defaultURLColors from '../../axios/axiosControllerColor';
 import defaultURLProduct from '../../axios/axiosControllerProduct';
-import defaultURLCategoryCost  from '../../axios/axiosControllerCatCost';
+import defaultURLCategoryCost from '../../axios/axiosControllerCatCost';
 import defaultURLProductIngredients from '../../axios/axiosProductIngredients';
 import defaultURLProIngredientsAccessory from '../../axios/axiosControllerProductIngredientAccessory';
 import defaultURLCatalog from '../../axios/axiosControllerCatalog';
@@ -52,6 +52,21 @@ export function login(userInfo) {
         });
     };
 }
+
+export function loginTransaction() {
+    return (dispatch) => {
+        axiosLogin.get(`GetLoginTransactions`).then(function (response) {
+            dispatch({
+                type: types.LOGINTRANSACTION,
+                data: response.data
+            });
+        }).catch(function (error) {
+            console.log("login: ", error);
+            toastr.error("برجاء الاتصال بالمسئول عن النظام");
+        });
+    };
+}
+
 export function loginForEmployees(user) {
     return (dispatch) => {
         defaultURLEmployee.post(`LoginEmployee`, user).then(function (response) {

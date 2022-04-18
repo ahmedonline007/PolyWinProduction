@@ -32,8 +32,9 @@ namespace PolyWinApplication.Controllers.infoData
         private readonly IUserControlService _userControlService;
         private readonly IDescountRepository _descountRepository;
         private readonly IConfiguration _configuration;
+        private readonly ILoginTransactionRepository _login;
 
-        public UserInfoController(IAgentRepository agentRepository,
+        public UserInfoController(ILoginTransactionRepository login, IAgentRepository agentRepository,
             IWebHostEnvironment webHostEnvironment,
             IUserControlService userControlService, IDescountRepository descountRepository, IConfiguration configuration
             )
@@ -42,7 +43,7 @@ namespace PolyWinApplication.Controllers.infoData
             _userControlService = userControlService;
             _agentRepository = agentRepository;
             _descountRepository = descountRepository; _configuration = configuration;
-
+            _login = login;
         }
 
 
@@ -55,7 +56,7 @@ namespace PolyWinApplication.Controllers.infoData
             var user = _userControlService.CheckValidUser(model.UserName, model.Password, model.device_id);
             // var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null)
-            { 
+            {
                 var authClaims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
@@ -90,9 +91,9 @@ namespace PolyWinApplication.Controllers.infoData
                         UserType = user.UserType,
                         ListDescount = _descountRepository.GetDescountByType(user.UserType),
                     }
-                });              
+                });
             }
-             
+
             Response<string> response = new Response<string>();
             response.code = "401";
             response.message = "Un Auth";
@@ -292,6 +293,16 @@ namespace PolyWinApplication.Controllers.infoData
         }
 
         #endregion
+
+        [HttpGet]
+        [Route("GetLoginTransactions")]
+        public IActionResult GetLoginTransactions()
+        {
+            var result = _login.GetLoginTransactions();
+
+            return Ok(result);
+        }
+
         private string ProcessUploadedFileOfAgent(IFormFile Photo)
         {
             try

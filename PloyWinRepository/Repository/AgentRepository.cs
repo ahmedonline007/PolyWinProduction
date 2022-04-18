@@ -348,7 +348,6 @@ namespace PloyWinRepository.Repository
 
             var listUsers = _userControlService.getListWorkShop();
 
-
             var result = FindBy(x => listUsers.Contains(x.UserId) && x.IsDeleted == null).Select(x => new DtoAgent
             {
                 id = x.Id,
@@ -498,11 +497,11 @@ namespace PloyWinRepository.Repository
         }
 
         public List<DtoAccountDetails> GetAllAccounts()
-
         {
             var result = (from q in Context.Users.AsNoTracking().Where(x => x.isDeleted == null && x.ManagerId != null)
                           let clientInfo = Context.TblClient.Where(x => x.UserId == q.Id).Select(x => new { Name = x.Name, Phone = x.ClientPhone }).FirstOrDefault()
                           let agentInfo = Context.TblAgent.Where(x => x.UserId == q.Id).Select(x => new { Name = x.Name, Phone = x.AgentPhone }).FirstOrDefault()
+                          let agentMangInfo = Context.TblAgent.Where(x => x.UserId == q.ManagerId).Select(x => new { Name = x.Name, government = x.AgentGovernorate }).FirstOrDefault()
                           select new DtoAccountDetails
                           {
                               id = q.Id,
@@ -511,7 +510,9 @@ namespace PloyWinRepository.Repository
                               Username = q.UserName,
                               Password = q.PasswordHash,
                               Name = q.UserType == 4 ? clientInfo.Name : agentInfo.Name,
-                              Phone = q.UserType == 4 ? clientInfo.Phone : agentInfo.Phone
+                              Phone = q.UserType == 4 ? clientInfo.Phone : agentInfo.Phone,
+                              government = agentMangInfo.government,
+                              managerName = agentMangInfo.Name
                           }).ToList();
 
             return result;
@@ -521,7 +522,7 @@ namespace PloyWinRepository.Repository
         {
             Response<List<DtoAgentLogo>> res = new Response<List<DtoAgentLogo>>();
             var result = (from q in Context.TblAgent.AsNoTracking().Where(x => x.IsDeleted == null)
-                          select new DtoAgentLogo {agentLogo = q.AgentLogo ?? "",}).ToList();
+                          select new DtoAgentLogo { agentLogo = q.AgentLogo ?? "", }).ToList();
             res.code = StaticApiStatus.ApiSuccess.Code;
             res.message = StaticApiStatus.ApiSuccess.MessageAr;
             res.status = StaticApiStatus.ApiSuccess.Status;

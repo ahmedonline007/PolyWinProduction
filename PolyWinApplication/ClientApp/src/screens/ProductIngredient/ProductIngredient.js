@@ -1,4 +1,4 @@
-﻿import React, { Component, Fragment } from 'react';
+﻿import React, { Component  } from 'react';
 import { connect } from 'react-redux';
 import actions from '../../redux/actions';
 import { bindActionCreators } from "redux";
@@ -8,8 +8,7 @@ import ReactTable from '../renderData/renderData';
 import toastr from 'toastr';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Select from "react-select";
-import axiosDocsControlle from '../../axios/axiosControlle';
+import Select from "react-select"; 
 import '../../Design/CSS/custom.css';
 import defaultURLProductIngredients from '../../axios/axiosProductIngredients';
 
@@ -69,6 +68,11 @@ class ProductIngredient extends Component {
                 filterable: true,
                 Cell: props => <span style={{ direction: "ltr" }}>{props.value}</span>
             },
+            { 
+                Header: <strong> الخصم</strong>,
+                accessor: 'haveDescountString',
+                width: 200 
+            },
             {
                 Header: "",
                 id: "CheckEquation",
@@ -111,6 +115,7 @@ class ProductIngredient extends Component {
                 equation: "",
                 productId: "",
                 subCategoryId: "",
+                haveDescount: false
             },
             ListProductIngredient: [],
             objEquestion: {
@@ -241,6 +246,7 @@ class ProductIngredient extends Component {
                     obj.productId = { value: rowInfo.original.productId, label: rowInfo.original.productName };
                     obj.equation = rowInfo.original.equation;
                     obj.Id = rowInfo.original.id;
+                    obj.haveDescount = rowInfo.original.haveDescount;
 
                     this.setState({
                         objIngredient: obj,
@@ -273,6 +279,7 @@ class ProductIngredient extends Component {
         obj.equation = value.equation;
         obj.SubCategoryId = this.state.objIngredient.subCategoryId;
         obj.ProductId = value.productId.value;
+        obj.haveDescount = value.haveDescount;
 
         this.props.actions.addEditProductIngredient(obj);
     }
@@ -364,6 +371,7 @@ class ProductIngredient extends Component {
                                 productId: this.state.objIngredient.productId,
                                 subCategoryId: this.state.objIngredient.subCategoryId,
                                 equation: this.state.objIngredient.equation,
+                                haveDescount: this.state.objIngredient.haveDescount
                             }}>
                             {({ handleSubmit, handleChange, handleBlur, setFieldValue, setFieldTouched, values, touched, isValid, errors, }) => (
                                 <Form noValidate onSubmit={handleSubmit} style={{ fontWeight: 'bold', fontSize: '25px', width: '100%' }}>
@@ -401,6 +409,14 @@ class ProductIngredient extends Component {
                                         <Form.Control.Feedback type="invalid" style={{ color: "red" }}>
                                             {errors.equation}
                                         </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <Form.Group className="mb-3" controlId="haveDescount">
+                                        <Form.Check type="checkbox"
+                                            name="haveDescount"
+                                            onChange={handleChange}
+                                            value={values.haveDescount}
+                                            label="الخصم" />
                                     </Form.Group>
 
                                     <Alert key={1} variant={"danger"}>

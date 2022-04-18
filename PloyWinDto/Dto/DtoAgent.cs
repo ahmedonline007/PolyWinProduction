@@ -41,5 +41,7 @@ namespace PloyWinDto.Dto
         public string Password { get; set; }
         public string UserType { get; set; }
         public string ActiveType { get; set; }
+        public string managerName { get; set; }
+        public string government { get; set; }
     }
 }

@@ -14,6 +14,8 @@ namespace PloyWinDto.Dto
         public int SubCategoryId { get; set; }
         public string SubCategoryName { get; set; }
         public string Equation { get; set; }
+        public bool? haveDescount { get; set; }
+        public string haveDescountString { get; set; }
     }
 
 

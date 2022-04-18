@@ -17,5 +17,6 @@ namespace PloyWinContext.Entities
         public bool? IsActive { get; set; }
         public bool? isDeleted { get; set; }
         public string device_id { get; set; }
+        public DateTime addedDate { get; set; }
     }
 }

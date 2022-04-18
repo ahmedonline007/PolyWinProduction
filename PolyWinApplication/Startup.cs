@@ -45,7 +45,7 @@ namespace PolyWinApplication
              .AddDefaultTokenProviders();
 
             #region Repository   
-
+            services.AddScoped<ILoginTransactionRepository, LoginTransactionRepository>();
             services.AddScoped<IUserControlService, UserControlService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IDescountRepository, DescountRepository>();
@@ -236,7 +236,7 @@ namespace PolyWinApplication
             }
 
             app.UseSwagger();
-            
+
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", typeof(Program).Assembly.GetName().Name);

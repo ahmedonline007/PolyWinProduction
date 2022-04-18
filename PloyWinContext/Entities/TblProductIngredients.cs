@@ -20,7 +20,8 @@ namespace PloyWinContext.Entities
         [ForeignKey(nameof(TblSubCategory))]
         public int SubCategoryId { get; set; }
         public virtual TblSubCategory TblSubCategory { get; set; }
-        
+        //لدية خصم
+        public bool? haveDescount { get; set; }
         public string Equation { get; set; }
     }
 }

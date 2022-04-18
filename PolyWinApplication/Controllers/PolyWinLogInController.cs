@@ -85,11 +85,6 @@ namespace PolyWinApplication.Controllers
         }
 
 
-
-
-
-     
-
         #region  Gallery
 
         [HttpGet]
@@ -101,8 +96,6 @@ namespace PolyWinApplication.Controllers
         }
 
         #endregion
-
-
 
         #region CategoryGallery
 
@@ -116,6 +109,7 @@ namespace PolyWinApplication.Controllers
         }
 
         #endregion
+
         #region ParentCategory
         //for product
         [HttpGet]
@@ -128,6 +122,7 @@ namespace PolyWinApplication.Controllers
         }
 
         #endregion
+
         #region CategoryForMaterials
         //for materials or datasheet    
         //[HttpGet]
@@ -148,8 +143,7 @@ namespace PolyWinApplication.Controllers
             return Ok(workshops);
         }
         #endregion
-
-
+ 
         #region GetAgentById
         [HttpGet]
         [Route("GetAgentById")]
@@ -197,16 +191,6 @@ namespace PolyWinApplication.Controllers
         }
         #endregion
 
-        //GetAllProductWithNameAndCode()
-        //    #region getproductwithname&cat&code
-        //[HttpGet]
-        //[Route("GetAllProductWithNameAndCode")]
-        //public async Task<IActionResult> GetAllProductWithNameAndCode()
-        //{
-        //    var proColors = _productRepository.getall();
-        //    return Ok(proColors);
-        //}
-        //#endregion
         #region ParentProductCategory
 
         [HttpGet]
@@ -217,6 +201,7 @@ namespace PolyWinApplication.Controllers
             return Ok(result);
         }
         #endregion
+  
         #region getguaranteeText 
         [HttpGet]
         [Route("GetguaranteeText")]
@@ -256,15 +241,11 @@ namespace PolyWinApplication.Controllers
         [HttpGet]
         [Route("GetParentCategorywithProductForWebApp")]
         public Response<List<DtoGroupCategoryWithProduct>> GetParentCategorywithProductForWebApp()
-        {
-
-
+        { 
             var Cateory = _categoryRepository.GetParentCategorywithProductForWebApp();
             return Cateory;
         }
-     
-
-
+      
         [HttpGet]
         [Route("GetStatisticsForAgent")]
         public async Task<IActionResult> GetStatisticsForAgent(int userType)
@@ -310,6 +291,7 @@ namespace PolyWinApplication.Controllers
                 return ex.Message;
             }
         }
+      
         #region workshopbyOneGov
         [HttpGet]
         [Route("GetWorkShopByOneGov")]

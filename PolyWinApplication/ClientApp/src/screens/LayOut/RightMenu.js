@@ -292,6 +292,11 @@ class RightMenu extends Component {
                                                         <span> إيقاف / تفعيل الحساب</span>
                                                     </NavLink>
                                                 </li>
+                                                <li>
+                                                    <NavLink to="/System/LoginTransaction">
+                                                        <span> متابعة تسجيل الدخول</span>
+                                                    </NavLink>
+                                                </li>
                                             </ul>
                                         </li>
                                         : null

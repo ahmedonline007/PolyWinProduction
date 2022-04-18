@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PloyWinContext.Context;
 
 namespace PloyWinContext.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220418113700_logintransaction")]
+    partial class logintransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,9 +242,6 @@ namespace PloyWinContext.Migrations
 
                     b.Property<int>("UserType")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("addedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("device_id")
                         .HasColumnType("nvarchar(max)");
@@ -1616,9 +1615,6 @@ namespace PloyWinContext.Migrations
 
                     b.Property<int?>("TblProductsId")
                         .HasColumnType("int");
-
-                    b.Property<bool?>("haveDescount")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

@@ -31,9 +31,11 @@ namespace PloyWinRepository.Repository
                               Id = q.Id,
                               Equation = q.Equation,
                               ProductId = q.ProductId,
-                              ProductName = q.TblProductName.Name,//+ " - " + q.TblProduct.TblColors.ColorName,
+                              ProductName = q.TblProductName.Name,
                               SubCategoryId = q.SubCategoryId,
-                              SubCategoryName = q.TblSubCategory.Name
+                              SubCategoryName = q.TblSubCategory.Name,
+                              haveDescount = q.haveDescount,
+                              haveDescountString = q.haveDescount == null ? "لدية خصم" : "ليس لدية خصم"
                           }).ToList();
 
             foreach (var item in result)
@@ -66,12 +68,12 @@ namespace PloyWinRepository.Repository
                         isExist.ModifiedDate = DateTime.Now;
                         isExist.SubCategoryId = dto.SubCategoryId;
                         isExist.ProductId = dto.ProductId;
-
+                        isExist.haveDescount = dto.haveDescount;
 
                         Edit(isExist);
                         Save();
                         dto.ProductName = Context.TblProductName.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().Name;
-
+                        dto.haveDescountString = dto.haveDescount == null ? "لدية خصم" : "ليس لدية خصم";
                         // dto.ProductName = Context.TblProducts.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().TblProductName.Name;
                     }
                 }
@@ -83,7 +85,8 @@ namespace PloyWinRepository.Repository
                         AddedDate = DateTime.Now,
                         Equation = "Select  " + dto.Equation,
                         SubCategoryId = dto.SubCategoryId,
-                        ProductId = dto.ProductId
+                        ProductId = dto.ProductId,
+                        haveDescount = dto.haveDescount
                     };
 
                     Add(obj);
@@ -91,7 +94,7 @@ namespace PloyWinRepository.Repository
                     dto.Id = obj.Id;
                     //var productId = Context.TblProducts.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().ProductId;
                     dto.ProductName = Context.TblProductName.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().Name;
-
+                    dto.haveDescountString = dto.haveDescount == null ? "لدية خصم" : "ليس لدية خصم";
                 }
             }
 
@@ -200,6 +203,8 @@ namespace PloyWinRepository.Repository
                 return "";
             }
         }
+
+        //حساب التكلفة
         public ProductCost GetTotalPriceWithItems(DtoProductCost dto, int? userType)
         {
 
@@ -258,34 +263,50 @@ namespace PloyWinRepository.Repository
                         typeofdescount = x.TypeDescount
                     }).FirstOrDefault();
 
-                    if (getDescount != null)
+                    //التحقق من ان المنتج يطبق عليه الخصم ام لا
+                    if (item.haveDescount == null)
                     {
-                        items.Descount = getDescount.Descount.ToString();
-                        calcItems.descount = items.Descount;
-
-                        if (getDescount.typeofdescount == true)
+                        if (getDescount != null)
                         {
-                            var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+                            items.Descount = getDescount.Descount.ToString();
+                            calcItems.descount = items.Descount;
 
-                            var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
-                            XX = Math.Round(XX, 2);
-                            items.TotalByDescount = (XX).ToString();
-                            calcItems.totalByDescount = items.TotalByDescount;
+                            if (getDescount.typeofdescount == true)
+                            {
+                                var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+
+                                var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
+                                XX = Math.Round(XX, 2);
+                                items.TotalByDescount = (XX).ToString();
+                                calcItems.totalByDescount = items.TotalByDescount;
+                            }
+                            else
+                            {
+                                var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
+                                XX = Math.Round(XX, 2);
+                                items.TotalByDescount = (XX).ToString();
+                                calcItems.totalByDescount = items.TotalByDescount;
+                            }
+
+                            items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
+                            calcItems.typeOfDescount = items.TypeOfDescount;
+
+                            items.Type = true;
+                            pro.items.Add(items);
+                            calc.CostCalcItems.Add(calcItems);
                         }
                         else
                         {
-                            var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
-                            XX = Math.Round(XX, 2);
-                            items.TotalByDescount = (XX).ToString();
+                            items.Descount = "0";
+                            items.TypeOfDescount = "لا يوجد خصم";
+                            items.TotalByDescount = items.TotalMeterCost;
+
+                            calcItems.typeOfDescount = items.TypeOfDescount;
                             calcItems.totalByDescount = items.TotalByDescount;
+                            items.Type = true;
+                            pro.items.Add(items);
+                            calc.CostCalcItems.Add(calcItems);
                         }
-
-                        items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
-                        calcItems.typeOfDescount = items.TypeOfDescount;
-
-                        items.Type = true;
-                        pro.items.Add(items);
-                        calc.CostCalcItems.Add(calcItems);
                     }
                     else
                     {
@@ -357,7 +378,6 @@ namespace PloyWinRepository.Repository
                             items.TotalByDescount = (XX).ToString();
                             //items.TotalByDescount = (Math.Round(Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco)), 2).ToString();
                             calcItems.totalByDescount = items.TotalByDescount;
-
                         }
                         else
                         {
@@ -367,7 +387,6 @@ namespace PloyWinRepository.Repository
 
                             //items.TotalByDescount = (Math.Round(Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount)), 2).ToString();
                             calcItems.totalByDescount = items.TotalByDescount;
-
                         }
 
                         items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";

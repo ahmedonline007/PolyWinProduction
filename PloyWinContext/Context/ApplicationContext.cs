@@ -78,6 +78,6 @@ namespace PloyWinContext.Context
         public DbSet<Roles> Roles { get; set; }
         public DbSet<TblPurchase_Invoice> TblPurchase_Invoice { get; set; }
         public DbSet<TblPurchase_Invoices_Details> TblPurchase_Invoices_Details { get; set; }
-
+        public DbSet<LoginTransaction> LoginTransaction { get; set; }
     }
 }

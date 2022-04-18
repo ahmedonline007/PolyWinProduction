@@ -39,6 +39,7 @@ namespace PloyWinDto.Dto
         public string UserTypeName { get; set; }
         public string ManagerId { get; set; }
         public string managerName { get; set; }
+        public string addedDate { get; set; }
         public List<DtoDescount> ListDescount { get; set; }
     }
     public class ChanagePasswordViewModel

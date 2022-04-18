@@ -38,7 +38,7 @@ class ActiveUnActiveAccount extends Component {
             {
                 Header: <strong> الأسم </strong>,
                 accessor: 'name',
-                width: 200,
+                width: 150,
                 filterable: true,
             },
             {
@@ -52,7 +52,6 @@ class ActiveUnActiveAccount extends Component {
                 width: 150,
                 filterable: true,
             },
-       
             {
                 Header: <strong> رقم الهاتف </strong>,
                 accessor: 'phone',
@@ -70,6 +69,17 @@ class ActiveUnActiveAccount extends Component {
                 accessor: 'activeType',
                 width: 150,
                 filterable: true,
+            },
+            {
+                Header: <strong>إسم منشى الحساب</strong>,
+                accessor: 'managerName',
+                width: 150,
+                filterable: true,
+            },
+            { 
+                Header: <strong>المحافظة</strong>,
+                accessor: 'government',
+                width: 150
             }
         ];
 

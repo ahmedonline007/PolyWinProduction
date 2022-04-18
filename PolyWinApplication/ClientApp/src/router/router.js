@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
+ 
 import Loading from '../screens/LoadingPage/LoadingPage';
 
 //layOut
@@ -10,6 +11,7 @@ const DashBoard = lazy(() => import("../screens/LayOut/DashBoard"));
 //const DashBoardStore = lazy(() => import("../screens/LayOut/DashBoardStore"));
 
 const Accounts = lazy(() => import("../screens/Accounts/Accounts"));
+const LoginTransaction = lazy(() => import("../screens/Accounts/LoginTransactions"));
 const Products = lazy(() => import("../screens/Products/Products"));
 const PurchaseOrder = lazy(() => import("../screens/PurchaseOrder/PurchaseOrder"));
 const PurchaseOrderAddEdit = lazy(() => import("../screens/PurchaseOrder/PurchaseOrderAddEdit"));
@@ -67,6 +69,7 @@ const RouterDocument = () => {
                             <Route path="/System/PriceLst" component={PriceLst} />
                             <Route path="/System/ClientComments" component={ClientComments} />
                             <Route path="/System/ActiveUnActiveAccount" component={ActiveUnActiveAccount} />
+                            <Route path="/System/LoginTransaction" component={LoginTransaction} />
                             <Route path="/System/Factor" component={Factor} />
                             <Route path="/System/CompanyInfo" component={CompanyInfo} />
                             <Route path="/System/Products" component={Products} />

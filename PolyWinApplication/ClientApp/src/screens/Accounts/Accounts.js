@@ -45,13 +45,17 @@ class Accounts extends Component {
             {
                 Header: <strong>كلمه المرور</strong>,
                 accessor: 'password',
-                width: 200,
-                filterable: true,
+                width: 200, 
             }, {
-                Header: <strong>الوكيل</strong>,
+                Header: <strong>إسم الورشة</strong>,
                 accessor: 'managerName',
                 width: 200,
                 filterable: true,
+            }, 
+            {
+                Header: <strong>تاريخ الانشاء</strong>,
+                accessor: 'addedDate',
+                width: 150 
             }
         ];
 

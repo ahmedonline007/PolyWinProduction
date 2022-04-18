@@ -46,7 +46,8 @@ export default
         ListPaymentForDrop: [],
         ListBankOutForDrop: [],
         ListProductIngredientAccess: [],
-        ListEmployee:[],
-        ListRoleDD:[],
+        ListEmployee: [],
+        ListRoleDD: [],
         objCompanyInfo: {},
+        ListLoginTransaction: []
     }

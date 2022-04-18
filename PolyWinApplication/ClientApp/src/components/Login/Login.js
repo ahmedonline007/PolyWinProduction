@@ -1,8 +1,5 @@
 ﻿import React, { Component, Fragment } from 'react';
 import { Spinner, Button } from 'react-bootstrap';
-import Wave from "../../Design/img/wave.png";
-import Bg from "../../Design/img/bg.svg";
-import Avatar from "../../Design/img/avatar.svg";
 import { connect } from 'react-redux';
 import actions from '../../redux/actions';
 import { bindActionCreators } from "redux";

@@ -7,21 +7,21 @@ export default function (state = initialState, action) {
         case 'LOGIN':
             const obj = action.data.payload;
             sessionStorage.setItem("UserType", obj.userType);
-           sessionStorage.setItem("token", "Bearer " + obj.token);
+            sessionStorage.setItem("token", "Bearer " + obj.token);
             sessionStorage.removeItem("role_id");
             sessionStorage.removeItem("name");
-            return {    
+            return {
                 ...state,
                 token: "Bearer " + obj.token
             };
-       // login-employee
+        // login-employee
         case 'LOGINEMPLOYEE':
             const objEmployee = action.data.payload;
             sessionStorage.removeItem("UserType");
             sessionStorage.removeItem("token");
             sessionStorage.setItem("role_id", objEmployee.roles_id);
             sessionStorage.setItem("name", objEmployee.name);
-       
+
             return {
                 ...state,
                 rolePermission: objEmployee.roles_id
@@ -1040,7 +1040,7 @@ export default function (state = initialState, action) {
                 ...state,
                 ListBankOutForDrop: objBankOuts
             };
-            
+
         case 'DELETEBANKOut':
             let ListBankOut = state.ListBankOut
 
@@ -1065,59 +1065,59 @@ export default function (state = initialState, action) {
                 ...state,
                 ListBankOut: [...state.ListBankOut, action.data.payload]
             };
-            case 'LISTBANKOut':
+        case 'LISTBANKOut':
 
-                return {
-                    ...state,
-                    ListBankOut: action.data.payload
-                };
-            //EMPLOYEES
-            case 'LISTEMPLOYEE':               
-                return {
-                    ...state,
-                    ListEmployee: action.data.payload
-                };
-    
-            case 'DELETEEMPLOYEE':
-                let ListEmployee = state.ListEmployee
-    
-                action.ids.map(xx => {
-                    ListEmployee = ListEmployee.filter(x => x.id !== xx);
-                });
-                return {
-                    ...state,
-                    ListEmployee: [...ListEmployee]
-                };
-    
-            case 'ADDEDITEMPLOYEE':
-                let ListEmployees = state.ListEmployee;
-    
-                let indexemps = ListEmployees.findIndex(x => x.id === action.data.payload.id);
-    
-                if (indexemps > -1) {
-                    ListEmployees.splice(ListEmployees, 1);
+            return {
+                ...state,
+                ListBankOut: action.data.payload
+            };
+        //EMPLOYEES
+        case 'LISTEMPLOYEE':
+            return {
+                ...state,
+                ListEmployee: action.data.payload
+            };
+
+        case 'DELETEEMPLOYEE':
+            let ListEmployee = state.ListEmployee
+
+            action.ids.map(xx => {
+                ListEmployee = ListEmployee.filter(x => x.id !== xx);
+            });
+            return {
+                ...state,
+                ListEmployee: [...ListEmployee]
+            };
+
+        case 'ADDEDITEMPLOYEE':
+            let ListEmployees = state.ListEmployee;
+
+            let indexemps = ListEmployees.findIndex(x => x.id === action.data.payload.id);
+
+            if (indexemps > -1) {
+                ListEmployees.splice(ListEmployees, 1);
+            }
+
+            return {
+                ...state,
+                ListEmployee: [...state.ListEmployee, action.data.payload]
+            };
+        //roles
+        case 'LISTROLEDD':
+            let objRoles = [];
+            action.data.forEach(item => {
+                let objRole = {
+                    value: item.id,
+                    label: item.name
                 }
-    
-                return {
-                    ...state,
-                    ListEmployee: [...state.ListEmployee, action.data.payload]
-                };
-                //roles
-                case 'LISTROLEDD':
-                    let objRoles = [];
-                    action.data.forEach(item => {
-                        let objRole = {
-                            value: item.id,
-                            label: item.name
-                        }
-        
-                        objRoles.push(objRole);
-                    });
-        
-                    return {
-                        ...state,
-                        ListRoleDD: objRoles
-                    };
+
+                objRoles.push(objRole);
+            });
+
+            return {
+                ...state,
+                ListRoleDD: objRoles
+            };
         //itemtype
         case 'LISTITEMTYPE':
 
@@ -1337,6 +1337,12 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 ListBankOutDepositedec: [...state.ListBankOut, action.data.payload]
+            };
+
+        case 'LOGINTRANSACTION':
+            return {
+                ...state,
+                ListLoginTransaction: action.data
             };
     }
 }
