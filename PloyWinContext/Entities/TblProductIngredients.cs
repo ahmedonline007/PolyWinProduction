@@ -16,12 +16,12 @@ namespace PloyWinContext.Entities
         public virtual TblProductName TblProductName { get; set; }
 
         //subcategory
-
         [ForeignKey(nameof(TblSubCategory))]
         public int SubCategoryId { get; set; }
         public virtual TblSubCategory TblSubCategory { get; set; }
         //لدية خصم
         public bool? haveDescount { get; set; }
+        public bool? haveColor { get; set; }
         public string Equation { get; set; }
     }
 }

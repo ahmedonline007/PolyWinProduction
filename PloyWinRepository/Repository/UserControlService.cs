@@ -7,7 +7,7 @@ using PloyWinDto.Dto;
 using PloyWinRepository.EnumData;
 using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PloyWinRepository.Repository
@@ -90,6 +90,8 @@ namespace PloyWinRepository.Repository
                         _login.AddLoginTransaction(log);
                     }
                 }
+
+                return result;
             }
             else if (result.device_id == device_id)
             {
@@ -215,7 +217,7 @@ namespace PloyWinRepository.Repository
                     AccessFailedCount = 0,
                     Email = user.email,
                     PasswordHash = user.password,
-                    IsActive = (user.userType == 2 || user.userType == 4) ? true : false,
+                    IsActive = true,//(user.userType == 2 || user.userType == 4) ? true : false,
                     addedDate = DateTime.Now
                 };
 

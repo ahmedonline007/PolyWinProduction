@@ -66,7 +66,7 @@ namespace PolyWinApplication.Controllers.infoData
             return Ok(Product);
         }
 
-
+        //حساب تكلفة صنف واحد
         [HttpPost]
         [Route("GetTotalPriceWithItems")]
         public async Task<IActionResult> GetTotalPriceWithItems(DtoProductCost dto)
@@ -75,6 +75,18 @@ namespace PolyWinApplication.Controllers.infoData
             var _user = _userControlService.GetUserByName(userClaim.Name);
 
             var Product = _productIngredientsRepository.GetTotalPriceWithItems(dto, _user.UserType);
+            return Ok(Product);
+        }
+
+        //حساب تكلفة صنف اكتر من صنف
+        [HttpPost]
+        [Route("GetListTotalPriceWithItems")]
+        public async Task<IActionResult> GetListTotalPriceWithItems(List<DtoProductCost> dto)
+        {
+            var userClaim = User.Identity as ClaimsIdentity;
+            var _user = _userControlService.GetUserByName(userClaim.Name);
+
+            var Product = _productIngredientsRepository.GetListTotalPriceWithItems(dto, _user.UserType);
             return Ok(Product);
         }
 

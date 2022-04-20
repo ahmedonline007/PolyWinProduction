@@ -51,8 +51,7 @@ namespace PolyWinApplication.Controllers.infoData
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
-        {
-
+        { 
             var user = _userControlService.CheckValidUser(model.UserName, model.Password, model.device_id);
             // var user = await _userManager.FindByNameAsync(model.UserName);
             if (user != null)

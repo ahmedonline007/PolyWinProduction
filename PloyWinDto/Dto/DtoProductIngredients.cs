@@ -15,7 +15,9 @@ namespace PloyWinDto.Dto
         public string SubCategoryName { get; set; }
         public string Equation { get; set; }
         public bool? haveDescount { get; set; }
+        public bool? haveColor { get; set; }
         public string haveDescountString { get; set; }
+        public string haveColorString { get; set; }
     }
 
 

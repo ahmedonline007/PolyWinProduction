@@ -17,5 +17,6 @@ namespace IPloyWinRepository.InterFace
         //string GetNewCalcProduct(int SubCategoryId, int productId, string width, string height);
         string GetNewCalcProduct(int Id, string width, string height);
         ProductCost GetTotalPriceWithItems(DtoProductCost dto, int? userType);
+        List<ProductCost> GetListTotalPriceWithItems(List<DtoProductCost> dto, int? userType);
     }
 }

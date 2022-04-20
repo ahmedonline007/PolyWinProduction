@@ -103,6 +103,7 @@ namespace PolyWinApplication.Controllers.infoData
             return Ok(result);
         }
 
+        //تعديل بيانات الفاتورة نفسها بمعنى ان فى الموبيل بيعمل اى اختيارات اخرى وبناءا عليها بيتم تغير فى الفاتورة
         [HttpGet]
         [Route("UpdateInvoices")]
         public async Task<IActionResult> UpdateInvoices(int invoiceId, string description, bool isRecived, double? totalinvoices, double? descount, double? totalwithdescount)
@@ -117,6 +118,7 @@ namespace PolyWinApplication.Controllers.infoData
             return Ok(result);
         }
 
+        //تعديل كمية معينة
         [HttpGet]
         [Route("UpdateQuantityInvoicesDetails")]
         public async Task<IActionResult> UpdateQuantityInvoicesDetails(int Id, int Qty)
@@ -147,6 +149,7 @@ namespace PolyWinApplication.Controllers.infoData
             return Ok(user);
         }
 
+        // تعديل تفاصيل الفاتورة
         [HttpPost]
         [Route("UpdateInvoicesDetails")]
         public async Task<IActionResult> UpdateInvoicesDetails(int invoiceId, List<DtoUpdateInvoiceDetails> ids)

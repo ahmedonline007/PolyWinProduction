@@ -35,7 +35,9 @@ namespace PloyWinRepository.Repository
                               SubCategoryId = q.SubCategoryId,
                               SubCategoryName = q.TblSubCategory.Name,
                               haveDescount = q.haveDescount,
-                              haveDescountString = q.haveDescount == null ? "لدية خصم" : "ليس لدية خصم"
+                              haveColor = q.haveColor,
+                              haveDescountString = q.haveDescount == null ? "لدية خصم" : "ليس لدية خصم",
+                              haveColorString = q.haveColor == null ? "لدية لون" : "ليس لدية لون"
                           }).ToList();
 
             foreach (var item in result)
@@ -53,6 +55,8 @@ namespace PloyWinRepository.Repository
             res.payload = result;
             return res;
         }
+
+
         public Response<DtoProductIngredients> AddEditProductIngredient(DtoProductIngredients dto)
         {
             Response<DtoProductIngredients> res = new Response<DtoProductIngredients>();
@@ -69,11 +73,13 @@ namespace PloyWinRepository.Repository
                         isExist.SubCategoryId = dto.SubCategoryId;
                         isExist.ProductId = dto.ProductId;
                         isExist.haveDescount = dto.haveDescount;
+                        isExist.haveColor = dto.haveColor;
 
                         Edit(isExist);
                         Save();
                         dto.ProductName = Context.TblProductName.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().Name;
                         dto.haveDescountString = dto.haveDescount == null ? "لدية خصم" : "ليس لدية خصم";
+                        dto.haveColorString = dto.haveColor == null ? "لدية لون" : "ليس لدية لون";
                         // dto.ProductName = Context.TblProducts.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().TblProductName.Name;
                     }
                 }
@@ -86,7 +92,8 @@ namespace PloyWinRepository.Repository
                         Equation = "Select  " + dto.Equation,
                         SubCategoryId = dto.SubCategoryId,
                         ProductId = dto.ProductId,
-                        haveDescount = dto.haveDescount
+                        haveDescount = dto.haveDescount,
+                        haveColor = dto.haveColor
                     };
 
                     Add(obj);
@@ -95,6 +102,7 @@ namespace PloyWinRepository.Repository
                     //var productId = Context.TblProducts.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().ProductId;
                     dto.ProductName = Context.TblProductName.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().Name;
                     dto.haveDescountString = dto.haveDescount == null ? "لدية خصم" : "ليس لدية خصم";
+                    dto.haveColorString = dto.haveColor == null ? "لدية لون" : "ليس لدية لون";
                 }
             }
 
@@ -231,69 +239,84 @@ namespace PloyWinRepository.Repository
                 // عرض كل منتج بيخرج كام متر
                 var totalMeter = GetNewCalcProduct(item.Id, dto.Width, dto.height);
 
-                // تكلفة المتر
-                var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.ColorId == dto.colorId && x.IsDeleted == null).Select(x =>
-                new
+                if (item.haveColor == null)
                 {
-                    ProductId = x.ProductId,
-                    PricePerMeter = x.PricePerMeter,
-                    CategoryId = x.CategoryId
-                }).FirstOrDefault();
-
-                if (totalCostMeter != null)
-                {
-                    var productName = Context.TblProductName.AsNoTracking().Where(x => x.Id == totalCostMeter.ProductId).FirstOrDefault().Name;
-
-                    items.ProductId = item.ProductId;
-                    items.ProductName = productName;
-                    items.Meter = totalMeter;
-                    items.Cost = totalCostMeter.PricePerMeter.ToString();
-                    items.TotalMeterCost = Math.Round((double)(Convert.ToDouble(totalCostMeter.PricePerMeter) * Convert.ToDouble(totalMeter)), 2).ToString();
-
-                    calcItems.productId = item.ProductId;
-                    calcItems.cost = items.Cost;
-                    calcItems.meter = items.Meter;
-                    calcItems.totalMeterCost = items.TotalMeterCost;
-
-                    var getParentCtegory = Context.TblCategory.AsNoTracking().Where(x => x.Id == totalCostMeter.CategoryId).FirstOrDefault().TypeOfCategory;
-
-                    var getDescount = Context.TblDescount.AsNoTracking().Where(x => x.TypeOfCategory == getParentCtegory && x.IsDeleted == null && x.TypeOfDescount == userType).Select(x => new
+                    // تكلفة المتر
+                    var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.ColorId == dto.colorId && x.IsDeleted == null).Select(x =>
+                    new
                     {
-                        Descount = x.Descount,
-                        typeofdescount = x.TypeDescount
+                        ProductId = x.ProductId,
+                        PricePerMeter = x.PricePerMeter,
+                        CategoryId = x.CategoryId
                     }).FirstOrDefault();
 
-                    //التحقق من ان المنتج يطبق عليه الخصم ام لا
-                    if (item.haveDescount == null)
+                    if (totalCostMeter != null)
                     {
-                        if (getDescount != null)
+                        var productName = Context.TblProductName.AsNoTracking().Where(x => x.Id == totalCostMeter.ProductId).FirstOrDefault().Name;
+
+                        items.ProductId = item.ProductId;
+                        items.ProductName = productName;
+                        items.Meter = totalMeter;
+                        items.Cost = totalCostMeter.PricePerMeter.ToString();
+                        items.TotalMeterCost = Math.Round((double)(Convert.ToDouble(totalCostMeter.PricePerMeter) * Convert.ToDouble(totalMeter)), 2).ToString();
+
+                        calcItems.productId = item.ProductId;
+                        calcItems.cost = items.Cost;
+                        calcItems.meter = items.Meter;
+                        calcItems.totalMeterCost = items.TotalMeterCost;
+
+                        var getParentCtegory = Context.TblCategory.AsNoTracking().Where(x => x.Id == totalCostMeter.CategoryId).FirstOrDefault().TypeOfCategory;
+
+                        var getDescount = Context.TblDescount.AsNoTracking().Where(x => x.TypeOfCategory == getParentCtegory && x.IsDeleted == null && x.TypeOfDescount == userType).Select(x => new
                         {
-                            items.Descount = getDescount.Descount.ToString();
-                            calcItems.descount = items.Descount;
+                            Descount = x.Descount,
+                            typeofdescount = x.TypeDescount
+                        }).FirstOrDefault();
 
-                            if (getDescount.typeofdescount == true)
+                        //التحقق من ان المنتج يطبق عليه الخصم ام لا
+                        if (item.haveDescount == null)
+                        {
+                            if (getDescount != null)
                             {
-                                var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+                                items.Descount = getDescount.Descount.ToString();
+                                calcItems.descount = items.Descount;
 
-                                var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
-                                XX = Math.Round(XX, 2);
-                                items.TotalByDescount = (XX).ToString();
-                                calcItems.totalByDescount = items.TotalByDescount;
+                                if (getDescount.typeofdescount == true)
+                                {
+                                    var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+
+                                    var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
+                                    XX = Math.Round(XX, 2);
+                                    items.TotalByDescount = (XX).ToString();
+                                    calcItems.totalByDescount = items.TotalByDescount;
+                                }
+                                else
+                                {
+                                    var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
+                                    XX = Math.Round(XX, 2);
+                                    items.TotalByDescount = (XX).ToString();
+                                    calcItems.totalByDescount = items.TotalByDescount;
+                                }
+
+                                items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
+                                calcItems.typeOfDescount = items.TypeOfDescount;
+
+                                items.Type = true;
+                                pro.items.Add(items);
+                                calc.CostCalcItems.Add(calcItems);
                             }
                             else
                             {
-                                var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
-                                XX = Math.Round(XX, 2);
-                                items.TotalByDescount = (XX).ToString();
+                                items.Descount = "0";
+                                items.TypeOfDescount = "لا يوجد خصم";
+                                items.TotalByDescount = items.TotalMeterCost;
+
+                                calcItems.typeOfDescount = items.TypeOfDescount;
                                 calcItems.totalByDescount = items.TotalByDescount;
+                                items.Type = true;
+                                pro.items.Add(items);
+                                calc.CostCalcItems.Add(calcItems);
                             }
-
-                            items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
-                            calcItems.typeOfDescount = items.TypeOfDescount;
-
-                            items.Type = true;
-                            pro.items.Add(items);
-                            calc.CostCalcItems.Add(calcItems);
                         }
                         else
                         {
@@ -308,17 +331,98 @@ namespace PloyWinRepository.Repository
                             calc.CostCalcItems.Add(calcItems);
                         }
                     }
-                    else
+                }
+                else
+                {
+                    // تكلفة المتر
+                    var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.IsDeleted == null).Select(x =>
+                    new
                     {
-                        items.Descount = "0";
-                        items.TypeOfDescount = "لا يوجد خصم";
-                        items.TotalByDescount = items.TotalMeterCost;
+                        ProductId = x.ProductId,
+                        PricePerMeter = x.PricePerMeter,
+                        CategoryId = x.CategoryId
+                    }).FirstOrDefault();
 
-                        calcItems.typeOfDescount = items.TypeOfDescount;
-                        calcItems.totalByDescount = items.TotalByDescount;
-                        items.Type = true;
-                        pro.items.Add(items);
-                        calc.CostCalcItems.Add(calcItems);
+                    if (totalCostMeter != null)
+                    {
+                        var productName = Context.TblProductName.AsNoTracking().Where(x => x.Id == totalCostMeter.ProductId).FirstOrDefault().Name;
+
+                        items.ProductId = item.ProductId;
+                        items.ProductName = productName;
+                        items.Meter = totalMeter;
+                        items.Cost = totalCostMeter.PricePerMeter.ToString();
+                        items.TotalMeterCost = Math.Round((double)(Convert.ToDouble(totalCostMeter.PricePerMeter) * Convert.ToDouble(totalMeter)), 2).ToString();
+
+                        calcItems.productId = item.ProductId;
+                        calcItems.cost = items.Cost;
+                        calcItems.meter = items.Meter;
+                        calcItems.totalMeterCost = items.TotalMeterCost;
+
+                        var getParentCtegory = Context.TblCategory.AsNoTracking().Where(x => x.Id == totalCostMeter.CategoryId).FirstOrDefault().TypeOfCategory;
+
+                        var getDescount = Context.TblDescount.AsNoTracking().Where(x => x.TypeOfCategory == getParentCtegory && x.IsDeleted == null && x.TypeOfDescount == userType).Select(x => new
+                        {
+                            Descount = x.Descount,
+                            typeofdescount = x.TypeDescount
+                        }).FirstOrDefault();
+
+                        //التحقق من ان المنتج يطبق عليه الخصم ام لا
+                        if (item.haveDescount == null)
+                        {
+                            if (getDescount != null)
+                            {
+                                items.Descount = getDescount.Descount.ToString();
+                                calcItems.descount = items.Descount;
+
+                                if (getDescount.typeofdescount == true)
+                                {
+                                    var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+
+                                    var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
+                                    XX = Math.Round(XX, 2);
+                                    items.TotalByDescount = (XX).ToString();
+                                    calcItems.totalByDescount = items.TotalByDescount;
+                                }
+                                else
+                                {
+                                    var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
+                                    XX = Math.Round(XX, 2);
+                                    items.TotalByDescount = (XX).ToString();
+                                    calcItems.totalByDescount = items.TotalByDescount;
+                                }
+
+                                items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
+                                calcItems.typeOfDescount = items.TypeOfDescount;
+
+                                items.Type = true;
+                                pro.items.Add(items);
+                                calc.CostCalcItems.Add(calcItems);
+                            }
+                            else
+                            {
+                                items.Descount = "0";
+                                items.TypeOfDescount = "لا يوجد خصم";
+                                items.TotalByDescount = items.TotalMeterCost;
+
+                                calcItems.typeOfDescount = items.TypeOfDescount;
+                                calcItems.totalByDescount = items.TotalByDescount;
+                                items.Type = true;
+                                pro.items.Add(items);
+                                calc.CostCalcItems.Add(calcItems);
+                            }
+                        }
+                        else
+                        {
+                            items.Descount = "0";
+                            items.TypeOfDescount = "لا يوجد خصم";
+                            items.TotalByDescount = items.TotalMeterCost;
+
+                            calcItems.typeOfDescount = items.TypeOfDescount;
+                            calcItems.totalByDescount = items.TotalByDescount;
+                            items.Type = true;
+                            pro.items.Add(items);
+                            calc.CostCalcItems.Add(calcItems);
+                        }
                     }
                 }
             }
@@ -451,6 +555,358 @@ namespace PloyWinRepository.Repository
             pro.CostCalcId = _costCalculation.AddCostCalc(calc);
 
             return pro;
+        }
+
+
+        //حساب تكلفة اكتر من منتج
+        public List<ProductCost> GetListTotalPriceWithItems(List<DtoProductCost> dto, int? userType)
+        {
+            List<ProductCost> propro = new List<ProductCost>();
+
+            foreach (var dtoitem in dto)
+            {
+                CostCalc calc = new CostCalc();
+                ProductCost pro = new ProductCost();
+
+                calc.colorId = dtoitem.colorId;
+                calc.expenses = dtoitem.expenses;
+                calc.height = dtoitem.height;
+                calc.subCategoryId = dtoitem.subCategoryId;
+                calc.Width = dtoitem.Width;
+
+                //جلب بيانات القطع بناءا على المنتج
+                var itemList = FindBy(x => x.SubCategoryId == dtoitem.subCategoryId && x.IsDeleted == null).ToList();
+
+                pro.items = new List<ItemCost>();
+                calc.CostCalcItems = new List<CostCalcItems>();
+
+                foreach (var item in itemList)
+                {
+                    ItemCost items = new ItemCost();
+                    CostCalcItems calcItems = new CostCalcItems();
+
+                    // عرض كل منتج بيخرج كام متر
+                    var totalMeter = GetNewCalcProduct(item.Id, dtoitem.Width, dtoitem.height);
+
+                    if (item.haveColor == null)
+                    {
+                        // تكلفة المتر
+                        var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.ColorId == dtoitem.colorId && x.IsDeleted == null).Select(x =>
+                        new
+                        {
+                            ProductId = x.ProductId,
+                            PricePerMeter = x.PricePerMeter,
+                            CategoryId = x.CategoryId
+                        }).FirstOrDefault();
+
+                        if (totalCostMeter != null)
+                        {
+                            var productName = Context.TblProductName.AsNoTracking().Where(x => x.Id == totalCostMeter.ProductId).FirstOrDefault().Name;
+
+                            items.ProductId = item.ProductId;
+                            items.ProductName = productName;
+                            items.Meter = totalMeter;
+                            items.Cost = totalCostMeter.PricePerMeter.ToString();
+                            items.TotalMeterCost = Math.Round((double)(Convert.ToDouble(totalCostMeter.PricePerMeter) * Convert.ToDouble(totalMeter)), 2).ToString();
+
+                            calcItems.productId = item.ProductId;
+                            calcItems.cost = items.Cost;
+                            calcItems.meter = items.Meter;
+                            calcItems.totalMeterCost = items.TotalMeterCost;
+
+                            var getParentCtegory = Context.TblCategory.AsNoTracking().Where(x => x.Id == totalCostMeter.CategoryId).FirstOrDefault().TypeOfCategory;
+
+                            var getDescount = Context.TblDescount.AsNoTracking().Where(x => x.TypeOfCategory == getParentCtegory && x.IsDeleted == null && x.TypeOfDescount == userType).Select(x => new
+                            {
+                                Descount = x.Descount,
+                                typeofdescount = x.TypeDescount
+                            }).FirstOrDefault();
+
+                            //التحقق من ان المنتج يطبق عليه الخصم ام لا
+                            if (item.haveDescount == null)
+                            {
+                                if (getDescount != null)
+                                {
+                                    items.Descount = getDescount.Descount.ToString();
+                                    calcItems.descount = items.Descount;
+
+                                    if (getDescount.typeofdescount == true)
+                                    {
+                                        var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+
+                                        var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
+                                        XX = Math.Round(XX, 2);
+                                        items.TotalByDescount = (XX).ToString();
+                                        calcItems.totalByDescount = items.TotalByDescount;
+                                    }
+                                    else
+                                    {
+                                        var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
+                                        XX = Math.Round(XX, 2);
+                                        items.TotalByDescount = (XX).ToString();
+                                        calcItems.totalByDescount = items.TotalByDescount;
+                                    }
+
+                                    items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
+                                    calcItems.typeOfDescount = items.TypeOfDescount;
+
+                                    items.Type = true;
+                                    pro.items.Add(items);
+                                    calc.CostCalcItems.Add(calcItems);
+                                }
+                                else
+                                {
+                                    items.Descount = "0";
+                                    items.TypeOfDescount = "لا يوجد خصم";
+                                    items.TotalByDescount = items.TotalMeterCost;
+
+                                    calcItems.typeOfDescount = items.TypeOfDescount;
+                                    calcItems.totalByDescount = items.TotalByDescount;
+                                    items.Type = true;
+                                    pro.items.Add(items);
+                                    calc.CostCalcItems.Add(calcItems);
+                                }
+                            }
+                            else
+                            {
+                                items.Descount = "0";
+                                items.TypeOfDescount = "لا يوجد خصم";
+                                items.TotalByDescount = items.TotalMeterCost;
+
+                                calcItems.typeOfDescount = items.TypeOfDescount;
+                                calcItems.totalByDescount = items.TotalByDescount;
+                                items.Type = true;
+                                pro.items.Add(items);
+                                calc.CostCalcItems.Add(calcItems);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // تكلفة المتر
+                        var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.IsDeleted == null).Select(x =>
+                        new
+                        {
+                            ProductId = x.ProductId,
+                            PricePerMeter = x.PricePerMeter,
+                            CategoryId = x.CategoryId
+                        }).FirstOrDefault();
+
+                        if (totalCostMeter != null)
+                        {
+                            var productName = Context.TblProductName.AsNoTracking().Where(x => x.Id == totalCostMeter.ProductId).FirstOrDefault().Name;
+
+                            items.ProductId = item.ProductId;
+                            items.ProductName = productName;
+                            items.Meter = totalMeter;
+                            items.Cost = totalCostMeter.PricePerMeter.ToString();
+                            items.TotalMeterCost = Math.Round((double)(Convert.ToDouble(totalCostMeter.PricePerMeter) * Convert.ToDouble(totalMeter)), 2).ToString();
+
+                            calcItems.productId = item.ProductId;
+                            calcItems.cost = items.Cost;
+                            calcItems.meter = items.Meter;
+                            calcItems.totalMeterCost = items.TotalMeterCost;
+
+                            var getParentCtegory = Context.TblCategory.AsNoTracking().Where(x => x.Id == totalCostMeter.CategoryId).FirstOrDefault().TypeOfCategory;
+
+                            var getDescount = Context.TblDescount.AsNoTracking().Where(x => x.TypeOfCategory == getParentCtegory && x.IsDeleted == null && x.TypeOfDescount == userType).Select(x => new
+                            {
+                                Descount = x.Descount,
+                                typeofdescount = x.TypeDescount
+                            }).FirstOrDefault();
+
+                            //التحقق من ان المنتج يطبق عليه الخصم ام لا
+                            if (item.haveDescount == null)
+                            {
+                                if (getDescount != null)
+                                {
+                                    items.Descount = getDescount.Descount.ToString();
+                                    calcItems.descount = items.Descount;
+
+                                    if (getDescount.typeofdescount == true)
+                                    {
+                                        var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+
+                                        var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
+                                        XX = Math.Round(XX, 2);
+                                        items.TotalByDescount = (XX).ToString();
+                                        calcItems.totalByDescount = items.TotalByDescount;
+                                    }
+                                    else
+                                    {
+                                        var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
+                                        XX = Math.Round(XX, 2);
+                                        items.TotalByDescount = (XX).ToString();
+                                        calcItems.totalByDescount = items.TotalByDescount;
+                                    }
+
+                                    items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
+                                    calcItems.typeOfDescount = items.TypeOfDescount;
+
+                                    items.Type = true;
+                                    pro.items.Add(items);
+                                    calc.CostCalcItems.Add(calcItems);
+                                }
+                                else
+                                {
+                                    items.Descount = "0";
+                                    items.TypeOfDescount = "لا يوجد خصم";
+                                    items.TotalByDescount = items.TotalMeterCost;
+
+                                    calcItems.typeOfDescount = items.TypeOfDescount;
+                                    calcItems.totalByDescount = items.TotalByDescount;
+                                    items.Type = true;
+                                    pro.items.Add(items);
+                                    calc.CostCalcItems.Add(calcItems);
+                                }
+                            }
+                            else
+                            {
+                                items.Descount = "0";
+                                items.TypeOfDescount = "لا يوجد خصم";
+                                items.TotalByDescount = items.TotalMeterCost;
+
+                                calcItems.typeOfDescount = items.TypeOfDescount;
+                                calcItems.totalByDescount = items.TotalByDescount;
+                                items.Type = true;
+                                pro.items.Add(items);
+                                calc.CostCalcItems.Add(calcItems);
+                            }
+                        }
+                    }
+                }
+
+
+                //قائمة منتجات اكسسوارات
+                var listAcces = Context.TblProductIngredientAccessory.AsNoTracking().Where(x => x.SubCategoryId == dtoitem.subCategoryId && x.IsDeleted == null).ToList();
+
+                foreach (var item in listAcces)
+                {
+                    ItemCost items = new ItemCost();
+                    CostCalcItems calcItems = new CostCalcItems();
+
+                    // تكلفة المتر
+                    var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.IsDeleted == null).Select(x =>
+                  new
+                  {
+                      ProductId = x.ProductId,
+                      PricePerOne = x.PricePerOne,
+                      CategoryId = x.CategoryId
+                  }).FirstOrDefault();
+
+                    if (totalCostMeter != null)
+                    {
+                        var productName = Context.TblProductName.AsNoTracking().Where(x => x.Id == totalCostMeter.ProductId).FirstOrDefault().Name;
+
+                        items.ProductId = item.ProductId;
+                        items.ProductName = productName;
+                        items.Meter = "0";
+                        items.Cost = totalCostMeter.PricePerOne.ToString();
+                        items.TotalMeterCost = Math.Round((double)(Convert.ToDouble(totalCostMeter.PricePerOne) * Convert.ToDouble(item.CountOfItems)), 2).ToString();
+
+                        calcItems.productId = item.ProductId;
+                        calcItems.cost = items.Cost;
+                        calcItems.meter = items.Meter;
+                        calcItems.totalMeterCost = items.TotalMeterCost;
+
+                        var getParentCtegory = Context.TblCategory.AsNoTracking().Where(x => x.Id == totalCostMeter.CategoryId).FirstOrDefault().TypeOfCategory;
+
+                        var getDescount = Context.TblDescount.AsNoTracking().Where(x => x.Id == getParentCtegory && x.IsDeleted == null && x.TypeOfDescount == 3).Select(x => new
+                        {
+                            Descount = x.Descount,
+                            typeofdescount = x.TypeDescount
+                        }).FirstOrDefault();
+
+                        if (getDescount != null)
+                        {
+                            items.Descount = getDescount.Descount.ToString();
+                            calcItems.descount = items.Descount;
+
+                            if (getDescount.typeofdescount == true)
+                            {
+                                var deco = (((Convert.ToDouble(items.TotalMeterCost) * Convert.ToDouble(getDescount.Descount)) / 100)).ToString();
+
+                                var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco);
+                                XX = Math.Round(XX, 2);
+                                items.TotalByDescount = (XX).ToString();
+                                //items.TotalByDescount = (Math.Round(Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(deco)), 2).ToString();
+                                calcItems.totalByDescount = items.TotalByDescount;
+                            }
+                            else
+                            {
+                                var XX = Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount);
+                                XX = Math.Round(XX, 2);
+                                items.TotalByDescount = (XX).ToString();
+
+                                //items.TotalByDescount = (Math.Round(Convert.ToDouble(items.TotalMeterCost) - Convert.ToDouble(getDescount.Descount)), 2).ToString();
+                                calcItems.totalByDescount = items.TotalByDescount;
+                            }
+
+                            items.TypeOfDescount = getDescount.typeofdescount == true ? "نسبة مئوية" : "رقم صحيح";
+                            calcItems.typeOfDescount = items.TypeOfDescount;
+                            items.Type = false;
+                            pro.items.Add(items);
+                            calc.CostCalcItems.Add(calcItems);
+                        }
+                        else
+                        {
+                            items.TypeOfDescount = "لا يوجد خصم";
+
+                            items.Descount = "0";
+
+                            items.TotalByDescount = items.TotalMeterCost;
+
+                            calcItems.typeOfDescount = items.TypeOfDescount;
+                            calcItems.totalByDescount = items.TotalByDescount;
+
+                            items.Type = false;
+                            pro.items.Add(items);
+                            calc.CostCalcItems.Add(calcItems);
+                        }
+                    }
+                }
+
+                //مجموع نسبة الخصم
+                double? totalTypetrue = pro.items.Where(x => x.Type == true).Sum(x => Convert.ToDouble(x.TotalByDescount));
+
+                pro.totalCost = pro.items.Sum(x => Convert.ToDouble(x.TotalByDescount));
+                //  calc.totalCalc  = pro.items.Sum(x => Convert.ToDouble(x.TotalByDescount));
+
+                double mortal = dtoitem.mortal ?? 15;
+
+                double totalWithMortal = 0;
+
+                if (mortal > 0)
+                {
+                    totalWithMortal = (double)((totalTypetrue * mortal) / 100);
+                }
+
+                //نسبة الربح
+                double Net = 0;
+                if (dtoitem.net > 0)
+                {
+                    Net = (double)((pro.totalCost * dtoitem.net) / 100);
+                }
+
+                pro.totalCost += Net;
+                pro.totalCost += totalWithMortal;
+                pro.totalCost += dtoitem.expenses;
+                pro.totalExpenses = Math.Round((double)dtoitem.expenses, 2);
+                pro.totalMortal = Math.Round((double)totalWithMortal, 2);
+                pro.net = Math.Round((double)Net, 2);
+                calc.totalCalc = Math.Round((double)pro.totalCost, 2);
+                calc.expenses = Math.Round((double)pro.totalExpenses, 2);
+                calc.mortal = Math.Round((double)pro.totalMortal, 2);
+                calc.net = Net;
+
+                pro.totalCost = Math.Round((double)pro.totalCost, 2);
+
+                pro.CostCalcId = _costCalculation.AddCostCalc(calc);
+
+                propro.Add(pro);
+            }
+
+            return propro;
         }
     }
 }

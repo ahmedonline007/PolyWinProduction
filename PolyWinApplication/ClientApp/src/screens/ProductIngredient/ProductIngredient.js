@@ -1,4 +1,4 @@
-﻿import React, { Component  } from 'react';
+﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import actions from '../../redux/actions';
 import { bindActionCreators } from "redux";
@@ -8,7 +8,7 @@ import ReactTable from '../renderData/renderData';
 import toastr from 'toastr';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Select from "react-select"; 
+import Select from "react-select";
 import '../../Design/CSS/custom.css';
 import defaultURLProductIngredients from '../../axios/axiosProductIngredients';
 
@@ -68,10 +68,15 @@ class ProductIngredient extends Component {
                 filterable: true,
                 Cell: props => <span style={{ direction: "ltr" }}>{props.value}</span>
             },
-            { 
+            {
                 Header: <strong> الخصم</strong>,
                 accessor: 'haveDescountString',
-                width: 200 
+                width: 200
+            },
+            {
+                Header: <strong> اللون</strong>,
+                accessor: 'haveColorString',
+                width: 200
             },
             {
                 Header: "",
@@ -110,12 +115,15 @@ class ProductIngredient extends Component {
             showImage: false,
             showEquetion: false,
             currentId: 0,
+            haveDescount: false,
+            haveColor: false,
             objIngredient: {
                 Id: 0,
                 equation: "",
                 productId: "",
                 subCategoryId: "",
-                haveDescount: false
+                haveDescount: false,
+                haveColor: false
             },
             ListProductIngredient: [],
             objEquestion: {
@@ -131,7 +139,7 @@ class ProductIngredient extends Component {
     componentWillReceiveProps(nextState, prevState) {
         if (nextState.ListProductIngredient && nextState.ListProductIngredient.length > 0) {
             if (this.state.objIngredient.subCategoryId != "") {
-                let ListProduct = nextState.ListProductIngredient.filter(x => x.subCategoryId == this.state.objIngredient.subCategoryId);
+                let ListProduct = nextState.ListProductIngredient.filter(x => x.subCategoryId == this.state.objIngredient.subCategoryId.value);
 
                 this.setState({
                     isLoading: false,
@@ -144,7 +152,7 @@ class ProductIngredient extends Component {
                 obj["subCategoryId"] = "";
 
                 this.setState({
-                    objIngredient: obj,
+                    //objIngredient: obj,
                     isLoading: false,
                     show: false,
                     showEquetion: false,
@@ -173,11 +181,13 @@ class ProductIngredient extends Component {
     showModal() {
         this.setState({
             show: true,
+            haveDescount: false,
+            haveColor: false,
             objIngredient: {
                 Id: 0,
                 equation: "",
                 productId: "",
-                subCategoryId: this.state.objIngredient.subCategoryId.value,
+                subCategoryId: this.state.objIngredient.subCategoryId,
             }
         });
     }
@@ -249,6 +259,8 @@ class ProductIngredient extends Component {
                     obj.haveDescount = rowInfo.original.haveDescount;
 
                     this.setState({
+                        haveDescount: rowInfo.original.haveDescount != null ? rowInfo.original.haveDescount : false,
+                        haveColor: rowInfo.original.haveColor != null ? rowInfo.original.haveColor : false,
                         objIngredient: obj,
                         show: true
                     });
@@ -277,9 +289,10 @@ class ProductIngredient extends Component {
         let obj = {};
         obj.id = value.Id;
         obj.equation = value.equation;
-        obj.SubCategoryId = this.state.objIngredient.subCategoryId;
+        obj.SubCategoryId = this.state.objIngredient.subCategoryId.value;
         obj.ProductId = value.productId.value;
-        obj.haveDescount = value.haveDescount;
+        obj.haveDescount = this.state.haveDescount;
+        obj.haveColor = this.state.haveColor;
 
         this.props.actions.addEditProductIngredient(obj);
     }
@@ -371,7 +384,8 @@ class ProductIngredient extends Component {
                                 productId: this.state.objIngredient.productId,
                                 subCategoryId: this.state.objIngredient.subCategoryId,
                                 equation: this.state.objIngredient.equation,
-                                haveDescount: this.state.objIngredient.haveDescount
+                                haveDescount: this.state.objIngredient.haveDescount,
+                                haveColor: this.state.objIngredient.haveColor
                             }}>
                             {({ handleSubmit, handleChange, handleBlur, setFieldValue, setFieldTouched, values, touched, isValid, errors, }) => (
                                 <Form noValidate onSubmit={handleSubmit} style={{ fontWeight: 'bold', fontSize: '25px', width: '100%' }}>
@@ -414,9 +428,21 @@ class ProductIngredient extends Component {
                                     <Form.Group className="mb-3" controlId="haveDescount">
                                         <Form.Check type="checkbox"
                                             name="haveDescount"
-                                            onChange={handleChange}
-                                            value={values.haveDescount}
-                                            label="الخصم" />
+                                            checked={this.state.haveDescount}
+                                            onChange={(e) => this.setState({
+                                                haveColor: !this.state.haveDescount
+                                            })}
+                                            label="بدون خصم" />
+                                    </Form.Group>
+
+                                    <Form.Group className="mb-3" controlId="haveColor">
+                                        <Form.Check type="checkbox"
+                                            name="haveColor"
+                                            checked={this.state.haveColor}
+                                            onChange={(e) => this.setState({
+                                                haveColor: !this.state.haveColor
+                                            })}
+                                            label="بدون لون" />
                                     </Form.Group>
 
                                     <Alert key={1} variant={"danger"}>

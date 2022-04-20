@@ -405,8 +405,7 @@ namespace PloyWinRepository.Repository
                 decimal invoicewithDiscount = 0;
 
                 foreach (var item in resDet)
-                {
-                    
+                { 
                     if (item.IsRecived==true)
                     {
                         invoiceVal += (decimal)(item.Quantity * item.PricePerOne);
