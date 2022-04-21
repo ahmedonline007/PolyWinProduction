@@ -29,8 +29,7 @@ $.ajax({
                         if (result.payload[i].listCategory[ii].products.length == 0) {
                             $(".imgAppendPvc" + i + "").append("<div class=-md-3'><h1>غير متوفر صور حاليا</h1></div>");
                         } else {
-                            //$(".imgAppendPvc" + i + "").append("<div class='col-md-4'><div class='card cardForGallery' style='max-width: 20rem;'><img class='card-img-top cover' width='200' height='300' src ='" + result.payload[i].listCategory[ii].products[iii].imgURL + "' alt =" + result.payload[i].listCategory[ii].products[iii].name + " ><div class='card-body  text-white bg-dark p-2 .bodyForGallery'>" + result.payload[i].listCategory[ii].products[iii].productCode + "</div>");
-                            $(".imgAppendPvc" + i + "").append("<div class='col-sm-3 boxAgent shadow-sm p-2 mb-4 bg-white rounded'><div class= 'card'><img class='imgAgent cover' src='" + result.payload[i].listCategory[ii].products[iii].imgURL + "' alt=" + result.payload[i].listCategory[ii].products[iii].name + "/> <div class='card-body'><h6 class='card-title margin-bottom-0'><span class='orgCol'>" + result.payload[i].listCategory[ii].products[iii].productCode + ":الكود</span></h6><p class='card-text colorHeadingBlue margin-bottom-0'>" + result.payload[i].listCategory[ii].products[iii].name + "</p><p class='card-text margin-bottom-0'><span class='orgCol'>" + result.payload[i].listCategory[ii].products[iii].pricePerOne + " : السعر بالعود </span></p><p class='orgCol'>" + result.payload[i].listCategory[ii].products[iii].pricePerMeter + " : السعر بالمتر</p></div></div></div >");
+                            $(".imgAppendPvc" + i + "").append("<div class='col-sm-3 boxAgent shadow-sm p-2 mb-4 bg-white rounded'><div class= 'card'><img class='imgAgent cover' src='" + result.payload[i].listCategory[ii].products[iii].imgURL + "' alt=" + result.payload[i].listCategory[ii].products[iii].name + "/> <div class='card-body'><h6 class='card-title margin-bottom-0'><span class='orgCol'>" + result.payload[i].listCategory[ii].products[iii].productCode + ":الكود</span></h6><p class='card-text colorHeadingBlue margin-bottom-0'>" + result.payload[i].listCategory[ii].products[iii].name + "</p></div></div></div>");
                         }
                     }
                 }
@@ -39,7 +38,6 @@ $.ajax({
     }, complete: function () {
         $("#loadingMaterial").css("visibility", "hidden");
         $("#MaterialSubMenu").removeClass("hidden");
-
     }
 });
 

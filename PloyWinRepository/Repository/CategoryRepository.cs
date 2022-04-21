@@ -294,8 +294,8 @@ namespace PloyWinRepository.Repository
                                             totalQuota = q.TotalQuota,
                                             productCode = q.ProductCode,
                                             measruingUnit = q.MeasruingUnit,
-                                            pricePerMeter = q.PricePerMeter,
-                                            pricePerOne = q.PricePerOne,
+                                            //pricePerMeter = q.PricePerMeter,
+                                            //pricePerOne = q.PricePerOne,
                                             TypeOfCategory = q.TblCategory.TypeOfCategory
                                         }).ToList();
 
