@@ -144,7 +144,6 @@ namespace PloyWinRepository.Repository
                                   pricePerMeter = s.PricePerMeter,
                                   descount = s.Descount,
                                   pricePerOne = s.PricePerOne,
-                             
                                   priceWithDescount = s.PriceWithDescount,
                                   ImgURL = s.Product.TblProductName.ImgURL,
                                   totalOrder = Math.Round((decimal)(s.Quantity * s.PriceWithDescount),  2)
