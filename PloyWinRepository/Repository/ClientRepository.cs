@@ -232,5 +232,40 @@ namespace PloyWinRepository.Repository
             return res;
 
         }
+
+        public Response<bool> UpdateClient(DtoClient user, string Id)
+        {
+            var result = FindBy(x => x.UserId == Id).FirstOrDefault();
+            bool gg = false;
+            if (result != null)
+            {
+                result.Name = user.Name;
+                result.ModifiedDate = DateTime.Now;
+                if (user.ClientLogoURL != null)
+                {
+                    result.ClientLogo = user.ClientLogoURL;
+                }
+                  
+                result.ClientAddress = user.ClientAddress;
+                result.ClientPhone = user.ClientPhone;
+                result.Long = user.Long;
+                result.Late = user.Late;
+                result.ClientTypeId = user.ClientTypeId;
+                result.Email = user.email;
+                Edit(result);
+                Save();
+                gg = true;
+            }
+
+            Response<bool> res = new Response<bool>();
+
+            res.code = StaticApiStatus.ApiSuccess.Code;
+            res.message = StaticApiStatus.ApiSuccess.MessageAr;
+            res.status = StaticApiStatus.ApiSuccess.Status;
+            res.IsSuccess = true;
+            res.payload = gg;
+
+            return res;
+        }
     }
 }

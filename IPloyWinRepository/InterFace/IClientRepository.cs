@@ -18,5 +18,6 @@ namespace IPloyWinRepository.InterFace
         Response<List<DtoClientViewModal>> GetAllClientInfoByUserLogIn(string userId);
         Response<List<DtoClientTypeCount>> GetClientTypeCount();
         Response<List<DtoClientViewModal>> GetClientTypeDetails();
+        Response<bool> UpdateClient(DtoClient user, string Id);
     }
 }

@@ -28,7 +28,7 @@ namespace PloyWinDto.Dto
         public string Width { get; set; }
         public string height { get; set; }
         public int? mortal { get; set; }
-        public int? net { get; set; }
+        //public int? net { get; set; }
         public double? expenses { get; set; }
     }
 

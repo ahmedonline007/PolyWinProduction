@@ -50,7 +50,50 @@ namespace PloyWinRepository.Repository
         {
             var result = FindBy(c => c.UserName == userName && c.PasswordHash == pass && c.IsActive == true && c.isDeleted == null).FirstOrDefault();
 
-            if (result != null)
+            if (result.device_id == null && device_id != null)
+            {
+                result.device_id = device_id;
+
+                Edit(result);
+                Save();
+
+                //save historylogin
+                var log = new LoginTransaction();
+
+                log.TypeAccount = result.UserType;
+                log.AddedDate = DateTime.Now;
+
+                if (result.UserType == 4)
+                {
+                    var resClient = Context.TblClient.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
+
+                    if (resClient != null)
+                    {
+                        log.AccountName = resClient.Name;
+                        log.Governorate = resClient.ClientAddress;
+                        log.Phone = resClient.ClientPhone;
+
+                        //save log on repository
+                        _login.AddLoginTransaction(log);
+                    }
+                }
+                else
+                {
+                    var resAgent = Context.TblAgent.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
+
+                    if (resAgent != null)
+                    {
+                        log.AccountName = resAgent.NameAgent;
+                        log.Governorate = resAgent.AgentGovernorate;
+                        log.Phone = resAgent.AgentPhone;
+
+                        _login.AddLoginTransaction(log);
+                    }
+                }
+
+                return result;
+            }
+            else if (result.device_id == device_id)
             {
                 //save historylogin
                 var log = new LoginTransaction();
@@ -88,88 +131,6 @@ namespace PloyWinRepository.Repository
 
                 return result;
             }
-
-            //if (result.device_id == null && device_id != null)
-            //{
-            //    result.device_id = device_id;
-
-            //    Edit(result);
-            //    Save();
-
-            //    //save historylogin
-            //    var log = new LoginTransaction();
-
-            //    log.TypeAccount = result.UserType;
-            //    log.AddedDate = DateTime.Now;
-
-            //    if (result.UserType == 4)
-            //    {
-            //        var resClient = Context.TblClient.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
-
-            //        if (resClient != null)
-            //        {
-            //            log.AccountName = resClient.Name;
-            //            log.Governorate = resClient.ClientAddress;
-            //            log.Phone = resClient.ClientPhone;
-
-            //            //save log on repository
-            //            _login.AddLoginTransaction(log);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var resAgent = Context.TblAgent.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
-
-            //        if (resAgent != null)
-            //        {
-            //            log.AccountName = resAgent.NameAgent;
-            //            log.Governorate = resAgent.AgentGovernorate;
-            //            log.Phone = resAgent.AgentPhone;
-
-            //            _login.AddLoginTransaction(log);
-            //        }
-            //    }
-
-            //    return result;
-            //}
-            //else if (result.device_id == device_id)
-            //{
-            //    //save historylogin
-            //    var log = new LoginTransaction();
-
-            //    log.TypeAccount = result.UserType;
-            //    log.AddedDate = DateTime.Now;
-
-            //    if (result.UserType == 4)
-            //    {
-            //        var resClient = Context.TblClient.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
-
-            //        if (resClient != null)
-            //        {
-            //            log.AccountName = resClient.Name;
-            //            log.Governorate = resClient.ClientAddress;
-            //            log.Phone = resClient.ClientPhone;
-
-            //            //save log on repository
-            //            _login.AddLoginTransaction(log);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var resAgent = Context.TblAgent.AsNoTracking().Where(x => x.UserId == result.Id).FirstOrDefault();
-
-            //        if (resAgent != null)
-            //        {
-            //            log.AccountName = resAgent.NameAgent;
-            //            log.Governorate = resAgent.AgentGovernorate;
-            //            log.Phone = resAgent.AgentPhone;
-
-            //            _login.AddLoginTransaction(log);
-            //        }
-            //    }
-
-            //    return result;
-            //}
 
             return null;
         }

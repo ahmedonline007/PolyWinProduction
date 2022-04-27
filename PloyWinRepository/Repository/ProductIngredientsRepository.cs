@@ -214,8 +214,7 @@ namespace PloyWinRepository.Repository
 
         //حساب التكلفة
         public ProductCost GetTotalPriceWithItems(DtoProductCost dto, int? userType)
-        {
-
+        { 
             CostCalc calc = new CostCalc();
             ProductCost pro = new ProductCost();
 
@@ -533,22 +532,22 @@ namespace PloyWinRepository.Repository
             }
 
             //نسبة الربح
-            double Net = 0;
-            if (dto.net > 0)
-            {
-                Net = (double)((pro.totalCost * dto.net) / 100);
-            }
+            //double Net = 0;
+            //if (dto.net > 0)
+            //{
+            //    Net = (double)((pro.totalCost * dto.net) / 100);
+            //}
 
-            pro.totalCost += Net;
+            //pro.totalCost += Net;
             pro.totalCost += totalWithMortal;
             pro.totalCost += dto.expenses;
             pro.totalExpenses = Math.Round((double)dto.expenses, 2);
             pro.totalMortal = Math.Round((double)totalWithMortal, 2);
-            pro.net = Math.Round((double)Net, 2);
+            //pro.net = Math.Round((double)Net, 2);
             calc.totalCalc = Math.Round((double)pro.totalCost, 2);
             calc.expenses = Math.Round((double)pro.totalExpenses, 2);
             calc.mortal = Math.Round((double)pro.totalMortal, 2);
-            calc.net = Net;
+            //calc.net = Net;
 
             pro.totalCost = Math.Round((double)pro.totalCost, 2);
 
@@ -882,22 +881,22 @@ namespace PloyWinRepository.Repository
                 }
 
                 //نسبة الربح
-                double Net = 0;
-                if (dtoitem.net > 0)
-                {
-                    Net = (double)((pro.totalCost * dtoitem.net) / 100);
-                }
+                //double Net = 0;
+                //if (dtoitem.net > 0)
+                //{
+                //    Net = (double)((pro.totalCost * dtoitem.net) / 100);
+                //}
 
-                pro.totalCost += Net;
+                //pro.totalCost += Net;
                 pro.totalCost += totalWithMortal;
                 pro.totalCost += dtoitem.expenses;
                 pro.totalExpenses = Math.Round((double)dtoitem.expenses, 2);
                 pro.totalMortal = Math.Round((double)totalWithMortal, 2);
-                pro.net = Math.Round((double)Net, 2);
+                //pro.net = Math.Round((double)Net, 2);
                 calc.totalCalc = Math.Round((double)pro.totalCost, 2);
                 calc.expenses = Math.Round((double)pro.totalExpenses, 2);
                 calc.mortal = Math.Round((double)pro.totalMortal, 2);
-                calc.net = Net;
+                //calc.net = Net;
 
                 pro.totalCost = Math.Round((double)pro.totalCost, 2);
 

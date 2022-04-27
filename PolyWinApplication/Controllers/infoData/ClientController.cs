@@ -215,6 +215,20 @@ namespace PolyWinApplication.Controllers.infoData
 
             return Ok(result);
         }
+        
+        [HttpPost]
+        [Route("UpdateClient")]
+        public async Task<IActionResult> UpdateClient([FromForm] DtoClient user)
+        {
+            var userClaim = User.Identity as ClaimsIdentity;
+            var UserId = _userControlService.GetUserByName(userClaim.Name);
+
+            user.ClientLogoURL = ProcessUploadedFileOfClient(user.Photo);
+
+            var result = _clientRepository.UpdateClient(user,UserId.Id);
+
+            return Ok(result);
+        }
 
         #endregion
         private string ProcessUploadedFileOfClient(IFormFile Photo)
