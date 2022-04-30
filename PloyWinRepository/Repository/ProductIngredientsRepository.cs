@@ -36,8 +36,8 @@ namespace PloyWinRepository.Repository
                               SubCategoryName = q.TblSubCategory.Name,
                               haveDescount = q.haveDescount,
                               haveColor = q.haveColor,
-                              haveDescountString = q.haveDescount == null ? "لدية خصم" : "ليس لدية خصم",
-                              haveColorString = q.haveColor == null ? "لدية لون" : "ليس لدية لون"
+                              haveDescountString = (q.haveDescount == null || q.haveDescount == true) ? "لديه خصم" : "ليس لديه خصم",
+                              haveColorString = (q.haveColor == null || q.haveColor == true) ? "لديه لون" : "ليس لديه لون",
                           }).ToList();
 
             foreach (var item in result)
@@ -78,8 +78,8 @@ namespace PloyWinRepository.Repository
                         Edit(isExist);
                         Save();
                         dto.ProductName = Context.TblProductName.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().Name;
-                        dto.haveDescountString = dto.haveDescount == null ? "لدية خصم" : "ليس لدية خصم";
-                        dto.haveColorString = dto.haveColor == null ? "لدية لون" : "ليس لدية لون";
+                        dto.haveDescountString = (dto.haveDescount == null || dto.haveDescount == true) ? "لديه خصم" : "ليس لديه خصم";
+                        dto.haveColorString = (dto.haveColor == null || dto.haveColor == true) ? "لديه لون" : "ليس لديه لون";
                         // dto.ProductName = Context.TblProducts.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().TblProductName.Name;
                     }
                 }
@@ -101,8 +101,8 @@ namespace PloyWinRepository.Repository
                     dto.Id = obj.Id;
                     //var productId = Context.TblProducts.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().ProductId;
                     dto.ProductName = Context.TblProductName.AsNoTracking().Where(x => x.Id == dto.ProductId).FirstOrDefault().Name;
-                    dto.haveDescountString = dto.haveDescount == null ? "لدية خصم" : "ليس لدية خصم";
-                    dto.haveColorString = dto.haveColor == null ? "لدية لون" : "ليس لدية لون";
+                    dto.haveDescountString = (dto.haveDescount == null || dto.haveDescount == true) ? "لديه خصم" : "ليس لديه خصم";
+                    dto.haveColorString = (dto.haveColor == null || dto.haveColor == true) ? "لديه لون" : "ليس لديه لون";
                 }
             }
 
@@ -238,7 +238,7 @@ namespace PloyWinRepository.Repository
                 // عرض كل منتج بيخرج كام متر
                 var totalMeter = GetNewCalcProduct(item.Id, dto.Width, dto.height);
 
-                if (item.haveColor == null)
+                if (item.haveColor == null || item.haveColor == true)
                 {
                     // تكلفة المتر
                     var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.ColorId == dto.colorId && x.IsDeleted == null).Select(x =>
@@ -273,7 +273,7 @@ namespace PloyWinRepository.Repository
                         }).FirstOrDefault();
 
                         //التحقق من ان المنتج يطبق عليه الخصم ام لا
-                        if (item.haveDescount == null)
+                        if (item.haveDescount == null || item.haveDescount == true)
                         {
                             if (getDescount != null)
                             {
@@ -366,7 +366,7 @@ namespace PloyWinRepository.Repository
                         }).FirstOrDefault();
 
                         //التحقق من ان المنتج يطبق عليه الخصم ام لا
-                        if (item.haveDescount == null)
+                        if (item.haveDescount == null || item.haveDescount == true)
                         {
                             if (getDescount != null)
                             {
@@ -587,7 +587,7 @@ namespace PloyWinRepository.Repository
                     // عرض كل منتج بيخرج كام متر
                     var totalMeter = GetNewCalcProduct(item.Id, dtoitem.Width, dtoitem.height);
 
-                    if (item.haveColor == null)
+                    if (item.haveColor == null || item.haveColor == true)
                     {
                         // تكلفة المتر
                         var totalCostMeter = Context.TblProducts.AsNoTracking().Where(x => x.ProductId == item.ProductId && x.ColorId == dtoitem.colorId && x.IsDeleted == null).Select(x =>
@@ -622,7 +622,7 @@ namespace PloyWinRepository.Repository
                             }).FirstOrDefault();
 
                             //التحقق من ان المنتج يطبق عليه الخصم ام لا
-                            if (item.haveDescount == null)
+                            if (item.haveDescount == null || item.haveDescount == true)
                             {
                                 if (getDescount != null)
                                 {
@@ -715,7 +715,7 @@ namespace PloyWinRepository.Repository
                             }).FirstOrDefault();
 
                             //التحقق من ان المنتج يطبق عليه الخصم ام لا
-                            if (item.haveDescount == null)
+                            if (item.haveDescount == null || item.haveDescount == true)
                             {
                                 if (getDescount != null)
                                 {

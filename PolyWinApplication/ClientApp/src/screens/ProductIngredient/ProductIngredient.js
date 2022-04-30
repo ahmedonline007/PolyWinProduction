@@ -188,6 +188,7 @@ class ProductIngredient extends Component {
                 equation: "",
                 productId: "",
                 subCategoryId: this.state.objIngredient.subCategoryId,
+                haveColor : this.state.haveColor,
             }
         });
     }
@@ -256,11 +257,10 @@ class ProductIngredient extends Component {
                     obj.productId = { value: rowInfo.original.productId, label: rowInfo.original.productName };
                     obj.equation = rowInfo.original.equation;
                     obj.Id = rowInfo.original.id;
-                    obj.haveDescount = rowInfo.original.haveDescount;
 
                     this.setState({
-                        haveDescount: rowInfo.original.haveDescount != null ? rowInfo.original.haveDescount : false,
-                        haveColor: rowInfo.original.haveColor != null ? rowInfo.original.haveColor : false,
+                        haveDescount: (rowInfo.original.haveDescount != null) ? rowInfo.original.haveDescount : true,
+                        haveColor: (rowInfo.original.haveColor != null) ? rowInfo.original.haveColor : true,
                         objIngredient: obj,
                         show: true
                     });
@@ -384,8 +384,8 @@ class ProductIngredient extends Component {
                                 productId: this.state.objIngredient.productId,
                                 subCategoryId: this.state.objIngredient.subCategoryId,
                                 equation: this.state.objIngredient.equation,
-                                haveDescount: this.state.objIngredient.haveDescount,
-                                haveColor: this.state.objIngredient.haveColor
+                                haveDescount: this.state.haveDescount,
+                                haveColor: this.state.haveColor 
                             }}>
                             {({ handleSubmit, handleChange, handleBlur, setFieldValue, setFieldTouched, values, touched, isValid, errors, }) => (
                                 <Form noValidate onSubmit={handleSubmit} style={{ fontWeight: 'bold', fontSize: '25px', width: '100%' }}>
@@ -430,9 +430,9 @@ class ProductIngredient extends Component {
                                             name="haveDescount"
                                             checked={this.state.haveDescount}
                                             onChange={(e) => this.setState({
-                                                haveColor: !this.state.haveDescount
+                                                haveDescount: !this.state.haveDescount
                                             })}
-                                            label="بدون خصم" />
+                                            label="لديه خصم" />
                                     </Form.Group>
 
                                     <Form.Group className="mb-3" controlId="haveColor">
@@ -440,9 +440,9 @@ class ProductIngredient extends Component {
                                             name="haveColor"
                                             checked={this.state.haveColor}
                                             onChange={(e) => this.setState({
-                                                haveColor: !this.state.haveColor
+                                              haveColor: !this.state.haveColor
                                             })}
-                                            label="بدون لون" />
+                                            label="لديه لون" />
                                     </Form.Group>
 
                                     <Alert key={1} variant={"danger"}>
@@ -452,19 +452,24 @@ class ProductIngredient extends Component {
                                         <Button size="lg" onClick={this.handleClose.bind(this)} style={{ marginRight: '10px' }}>
                                             غلق
                                         </Button>
-                                        {this.state.isLoading ? <Button size="lg" disabled  >
-                                            <Spinner
-                                                as="span"
-                                                animation="grow"
-                                                size="sm"
-                                                role="status"
-                                                aria-hidden="true"
-                                            />
-                                            تحميل
-                                        </Button> :
+                                        {
+                                            this.state.isLoading 
+                                            ? 
+                                            <Button size="lg" disabled  >
+                                                <Spinner
+                                                    as="span"
+                                                    animation="grow"
+                                                    size="sm"
+                                                    role="status"
+                                                    aria-hidden="true"
+                                                />
+                                                تحميل
+                                            </Button> 
+                                            :
                                             <Button size="lg" variant="success" type="submit">
                                                 حفظ
-                                            </Button>}
+                                            </Button>
+                                        }
                                     </div>
                                 </Form>
                             )}
