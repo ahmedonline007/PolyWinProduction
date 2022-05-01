@@ -28,7 +28,7 @@ namespace PloyWinDto.Dto
         public string Width { get; set; }
         public string height { get; set; }
         public int? mortal { get; set; }
-        public int net { get; set; } = 1; // To Not Cause Errors In Flutter
+        public int net { get; set; }
         public double? expenses { get; set; }
     }
 
@@ -38,7 +38,7 @@ namespace PloyWinDto.Dto
         public double? totalExpenses { get; set; }
         public double? totalMortal { get; set; }
         public double? totalCost { get; set; }
-        public double? net { get; set; }
+        public double? net { get; set; } 
         public List<ItemCost> items { get; set; }
     }
 

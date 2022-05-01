@@ -544,9 +544,11 @@ namespace PloyWinRepository.Repository
             pro.totalExpenses = Math.Round((double)dto.expenses, 2);
             pro.totalMortal = Math.Round((double)totalWithMortal, 2);
             //pro.net = Math.Round((double)Net, 2);
+            pro.net = 0;
             calc.totalCalc = Math.Round((double)pro.totalCost, 2);
             calc.expenses = Math.Round((double)pro.totalExpenses, 2);
             calc.mortal = Math.Round((double)pro.totalMortal, 2);
+            calc.net = 0;
             //calc.net = Net;
 
             pro.totalCost = Math.Round((double)pro.totalCost, 2);
@@ -893,9 +895,11 @@ namespace PloyWinRepository.Repository
                 pro.totalExpenses = Math.Round((double)dtoitem.expenses, 2);
                 pro.totalMortal = Math.Round((double)totalWithMortal, 2);
                 //pro.net = Math.Round((double)Net, 2);
+                pro.net = 0;
                 calc.totalCalc = Math.Round((double)pro.totalCost, 2);
                 calc.expenses = Math.Round((double)pro.totalExpenses, 2);
                 calc.mortal = Math.Round((double)pro.totalMortal, 2);
+                calc.net = 0;
                 //calc.net = Net;
 
                 pro.totalCost = Math.Round((double)pro.totalCost, 2);
